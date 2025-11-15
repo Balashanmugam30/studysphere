@@ -16,6 +16,7 @@ app.add_middleware(
 
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
+FRONTEND_URL = "https://study-sphere-75kh.vercel.app/"  # <--- IMPORTANT
 
 # --------------------------
 # ASK ROUTE
@@ -35,7 +36,7 @@ async def ask_ai(payload: dict):
     headers = {
         "Authorization": f"Bearer {OPENROUTER_API_KEY}",
         "Content-Type": "application/json",
-        "HTTP-Referer": "https://yourdomain.com",
+        "HTTP-Referer": FRONTEND_URL,
         "X-Title": "StudySphere"
     }
 
@@ -70,7 +71,7 @@ async def generate_quiz(payload: dict = None):
     headers = {
         "Authorization": f"Bearer {OPENROUTER_API_KEY}",
         "Content-Type": "application/json",
-        "HTTP-Referer": "https://yourdomain.com",
+        "HTTP-Referer": FRONTEND_URL,
         "X-Title": "StudySphere"
     }
 
