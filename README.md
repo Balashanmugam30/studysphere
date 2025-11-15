@@ -18,11 +18,38 @@ A modern, intelligent web application built with React that helps students inter
 ## Tech Stack
 
 - **Frontend**: React + Create React App
+- **Voice Integration**: Agora RTC SDK (Web)
+- **Speech Recognition**: Web Speech API (browser-native)
 - **Styling**: CSS with custom design system
 - **UI Components**: Shadcn/UI components
 - **HTTP Client**: Axios
 - **Notifications**: Sonner toast notifications
 - **Icons**: Lucide React
+
+## Agora Conversational AI Integration
+
+### Voice Mode Features
+- **Real-time Voice Capture**: Uses Agora RTC SDK for high-quality audio capture
+- **Speech-to-Text**: Converts spoken words to text using Web Speech API
+- **Voice Messages**: Voice input appears as chat bubbles with 🎤 indicator
+- **Visual Feedback**: Recording indicator with animated red dot
+- **Seamless Integration**: Voice messages sent to same backend as text messages
+
+### How Voice Mode Works
+1. Click "🎤 Voice Mode (Agora)" button in left panel
+2. Grant microphone permissions when prompted
+3. Click "Start Recording" to begin speaking
+4. Speak your question clearly
+5. Speech is automatically converted to text and sent to AI
+6. AI response appears in chat interface
+7. Click "Stop Voice Mode" when finished
+
+### Agora SDK Integration
+- **SDK**: AgoraRTC_N.js loaded via CDN
+- **Mode**: RTC (Real-Time Communication)
+- **Codec**: VP8
+- **Audio**: Microphone capture enabled
+- **Fallback**: Graceful degradation if SDK unavailable
 
 ## Installation & Setup
 
