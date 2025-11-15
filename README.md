@@ -1,9 +1,13 @@
 # StudySphere - Your Conversational AI Study Partner
 
-A modern, clean web application built with React that helps students interact with an AI study assistant. Upload PDF notes, chat with AI, and generate quiz questions to test your knowledge.
+**HackFest GDG New Delhi - LA-01 Smart Study Partner Track**
+
+A modern, intelligent web application built with React that helps students interact with an AI study assistant using voice and text. Features Agora Conversational AI integration for real-time voice interactions.
 
 ## Features
 
+- 🎤 **Agora Voice Mode**: Real-time voice conversations with AI using Agora RTC SDK
+- 🗣️ **Speech-to-Text**: Web Speech API integration for accurate voice recognition
 - 📚 **PDF Upload**: Simulated PDF upload with file name display
 - 💬 **AI Chat Interface**: Full conversational chat with AI assistant
 - 🧪 **Test Me**: Generate 3 multiple-choice quiz questions from your notes
