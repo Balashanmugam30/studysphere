@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from groq import Groq
 import os
 
-app = FastAPI(title="StudySphere Backend (Groq)")
+app = FastAPI(title="StudySphere Backend - Groq")
 
 # CORS
 app.add_middleware(
@@ -14,8 +14,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Groq SDK Client
+# GROQ API CLIENT
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+
+MODEL = "llama3-8b-8192-fp16"   # <-- FIXED MODEL
+
 
 # -----------------------------
 # CHAT ROUTE (/ask)
@@ -29,11 +32,11 @@ async def ask_ai(payload: dict):
 
     try:
         response = client.chat.completions.create(
-            model="llama3-8b-8192",
+            model=MODEL,
             messages=[{"role": "user", "content": question}]
         )
 
-        answer = response.choices[0].message["content"]
+        answer = response.choices[0].message.content
         return {"answer": answer}
 
     except Exception as e:
@@ -44,12 +47,12 @@ async def ask_ai(payload: dict):
 # QUIZ ROUTE (/quiz)
 # -----------------------------
 @app.post("/quiz")
-async def generate_quiz(payload: dict = None):
-    
+async def quiz(payload: dict = None):
+
     prompt = """
-    Generate exactly 3 engineering multiple-choice questions (MCQs).
-    Each must contain:
-    - A question
+    Generate exactly 3 multiple-choice questions (MCQs).
+    Include:
+    - Question
     - Options A, B, C, D
     - Correct answer
     Format cleanly.
@@ -57,11 +60,11 @@ async def generate_quiz(payload: dict = None):
 
     try:
         response = client.chat.completions.create(
-            model="llama3-8b-8192",
+            model=MODEL,
             messages=[{"role": "user", "content": prompt}]
         )
 
-        answer = response.choices[0].message["content"]
+        answer = response.choices[0].message.content
         return {"answer": answer}
 
     except Exception as e:
@@ -73,4 +76,4 @@ async def generate_quiz(payload: dict = None):
 # -----------------------------
 @app.get("/")
 async def root():
-    return {"message": "StudySphere Backend (Groq) is running!"}
+    return {"message": "StudySphere Backend (GROQ) is running!"}
