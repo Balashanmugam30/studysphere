@@ -1,11 +1,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from groq import Groq
 import os
+import requests
 
-app = FastAPI(title="StudySphere Backend - Groq")
+app = FastAPI(title="StudySphere Backend - DeepSeek")
 
-# CORS
+# CORS setup
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -14,16 +14,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# GROQ CLIENT
-client = Groq(api_key=os.getenv("GROQ_API_KEY"))
-
-# WORKING MODEL
-MODEL = "mixtral-8x7b-32768"   # <-- FINAL model
+DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
+DEEPSEEK_URL = "https://api.deepseek.com/chat/completions"
 
 
-# -----------------------------
+# -------------------------
 # CHAT ROUTE (/ask)
-# -----------------------------
+# -------------------------
 @app.post("/ask")
 async def ask_ai(payload: dict):
     question = payload.get("question", "")
@@ -31,50 +28,65 @@ async def ask_ai(payload: dict):
     if not question:
         return {"answer": "Please provide a valid question."}
 
-    try:
-        response = client.chat.completions.create(
-            model=MODEL,
-            messages=[{"role": "user", "content": question}]
-        )
+    data = {
+        "model": "deepseek-chat",
+        "messages": [{"role": "user", "content": question}]
+    }
 
-        answer = response.choices[0].message.content
+    headers = {
+        "Authorization": f"Bearer {DEEPSEEK_API_KEY}",
+        "Content-Type": "application/json"
+    }
+
+    try:
+        response = requests.post(DEEPSEEK_URL, json=data, headers=headers)
+        result = response.json()
+
+        answer = result["choices"][0]["message"]["content"]
         return {"answer": answer}
 
     except Exception as e:
         return {"answer": f"Backend error: {str(e)}"}
 
 
-# -----------------------------
+# -------------------------
 # QUIZ ROUTE (/quiz)
-# -----------------------------
+# -------------------------
 @app.post("/quiz")
-async def quiz(payload: dict = None):
+async def generate_quiz(payload: dict = None):
 
     prompt = """
-    Generate exactly 3 multiple-choice questions (MCQs).
-    Include:
+    Generate exactly 3 MCQs.
+    Each must include:
     - Question
     - Options A, B, C, D
-    - Correct answer
-    Format cleanly.
+    - Correct answer (just the letter).
     """
 
-    try:
-        response = client.chat.completions.create(
-            model=MODEL,
-            messages=[{"role": "user", "content": prompt}]
-        )
+    data = {
+        "model": "deepseek-chat",
+        "messages": [{"role": "user", "content": prompt}]
+    }
 
-        answer = response.choices[0].message.content
+    headers = {
+        "Authorization": f"Bearer {DEEPSEEK_API_KEY}",
+        "Content-Type": "application/json"
+    }
+
+    try:
+        response = requests.post(DEEPSEEK_URL, json=data, headers=headers)
+        result = response.json()
+
+        answer = result["choices"][0]["message"]["content"]
         return {"answer": answer}
 
     except Exception as e:
         return {"answer": f"Backend error: {str(e)}"}
 
 
-# -----------------------------
-# HEALTH CHECK
-# -----------------------------
+# -------------------------
+# HEALTH ROUTE
+# -------------------------
 @app.get("/")
 async def root():
-    return {"message": "StudySphere Backend (GROQ) is running!"}
+    return {"message": "StudySphere DeepSeek backend running!"}
