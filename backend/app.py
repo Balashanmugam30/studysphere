@@ -138,4 +138,3 @@ async def generate_quiz():
 @app.get("/")
 async def root():
     return {"message": "StudySphere Backend running with PDF + Gemma!"}
-
