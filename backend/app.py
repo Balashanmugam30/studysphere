@@ -42,7 +42,8 @@ async def ask_ai(payload: dict):
         response = requests.post(DEEPSEEK_URL, json=data, headers=headers)
         result = response.json()
 
-        answer = result["choices"][0]["message"]["content"]
+        # DeepSeek uses model_output.content
+        answer = result["choices"][0]["model_output"]["content"]
         return {"answer": answer}
 
     except Exception as e:
@@ -60,7 +61,7 @@ async def generate_quiz(payload: dict = None):
     Each must include:
     - Question
     - Options A, B, C, D
-    - Correct answer (just the letter).
+    - Correct answer (letter only).
     """
 
     data = {
@@ -77,7 +78,8 @@ async def generate_quiz(payload: dict = None):
         response = requests.post(DEEPSEEK_URL, json=data, headers=headers)
         result = response.json()
 
-        answer = result["choices"][0]["message"]["content"]
+        # DeepSeek uses model_output.content
+        answer = result["choices"][0]["model_output"]["content"]
         return {"answer": answer}
 
     except Exception as e:
@@ -85,7 +87,7 @@ async def generate_quiz(payload: dict = None):
 
 
 # -------------------------
-# HEALTH ROUTE
+# HEALTH CHECK
 # -------------------------
 @app.get("/")
 async def root():
