@@ -5,7 +5,6 @@ import requests
 
 app = FastAPI(title="StudySphere Backend - DeepSeek")
 
-# CORS setup
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -15,12 +14,9 @@ app.add_middleware(
 )
 
 DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY")
-DEEPSEEK_URL = "https://api.deepseek.com/chat/completions"
+DEEPSEEK_URL = "https://api.deepseek.com/v1/chat/completions"
 
 
-# -------------------------
-# CHAT ROUTE (/ask)
-# -------------------------
 @app.post("/ask")
 async def ask_ai(payload: dict):
     question = payload.get("question", "")
@@ -42,17 +38,14 @@ async def ask_ai(payload: dict):
         response = requests.post(DEEPSEEK_URL, json=data, headers=headers)
         result = response.json()
 
-        # DeepSeek uses model_output.content
-        answer = result["choices"][0]["model_output"]["content"]
+        # DeepSeek returns: result["choices"][0]["message"]["content"]
+        answer = result["choices"][0]["message"]["content"]
         return {"answer": answer}
 
     except Exception as e:
         return {"answer": f"Backend error: {str(e)}"}
 
 
-# -------------------------
-# QUIZ ROUTE (/quiz)
-# -------------------------
 @app.post("/quiz")
 async def generate_quiz(payload: dict = None):
 
@@ -61,7 +54,7 @@ async def generate_quiz(payload: dict = None):
     Each must include:
     - Question
     - Options A, B, C, D
-    - Correct answer (letter only).
+    - Correct answer (just the letter).
     """
 
     data = {
@@ -77,18 +70,14 @@ async def generate_quiz(payload: dict = None):
     try:
         response = requests.post(DEEPSEEK_URL, json=data, headers=headers)
         result = response.json()
-
-        # DeepSeek uses model_output.content
-        answer = result["choices"][0]["model_output"]["content"]
+        
+        answer = result["choices"][0]["message"]["content"]
         return {"answer": answer}
 
     except Exception as e:
         return {"answer": f"Backend error: {str(e)}"}
 
 
-# -------------------------
-# HEALTH CHECK
-# -------------------------
 @app.get("/")
 async def root():
     return {"message": "StudySphere DeepSeek backend running!"}
